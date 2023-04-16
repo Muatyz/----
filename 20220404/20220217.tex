@@ -1,0 +1,209 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[left=2.50cm, right=2.50cm, top=2.50cm, bottom=2.50cm]{geometry}
+%页边距
+\CTEXsetup[format={\Large\bfseries}]{section} %设置章标题居左
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- text font --
+% compile using Xelatex
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- 中文字体 --
+%\setmainfont{Microsoft YaHei}  % 微软雅黑
+%\setmainfont{YouYuan}  % 幼圆    
+%\setmainfont{NSimSun}  % 新宋体
+%\setmainfont{KaiTi}    % 楷体
+%\setmainfont{SimSun}   % 宋体
+%\setmainfont{SimHei}   % 黑体
+% -- 英文字体 --
+%\usepackage{times}
+%\usepackage{mathpazo}
+%\usepackage{fourier}
+%\usepackage{charter}
+
+%\usepackage{helvet}
+
+\usepackage{amsmath, amsfonts, amssymb} % math equations, symbols
+\usepackage[english]{babel}
+\usepackage{color}	% color content
+\usepackage{graphicx}	% import figures
+\usepackage{url}	% hyperlinks
+\usepackage{bm} 	% bold type for equations
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{zhnumber}
+\usepackage{longtable}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subfigure}
+\renewcommand\thesection{\zhnum{section}}
+\renewcommand \thesubsection {\arabic{section}}
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}}
+% use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{ \textbf{Initialize:}}
+% use Initialize in the format of Algorithm  
+\renewcommand{\algorithmicreturn}{ \textbf{Output:}}
+% use Output in the format of Algorithm  
+%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,%设置行号位置none不显示行号
+  %numberstyle=\tiny\courier, %设置行号大小
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside=``,%逃逸字符(1左面的键)，用于显示中文例如在代码中`中文...`
+  tabsize=4,
+  extendedchars=false %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr} %设置页眉、页脚
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+%\rhead{\includegraphics[width=1.2cm]{fig/ZJU_BLUE.eps}}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\fancyfoot[RE,RO]{~\thepage~}
+
+\fancyhead[RE,RO]{计算物理导论 \quad 2022春季学期 \quad 作业7  \quad 何翼成}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%  设置水印
+%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{draftwatermark}         % 所有页加水印
+%\usepackage[firstpage]{draftwatermark} % 只有第一页加水印
+% \SetWatermarkText{Water-Mark}           % 设置水印内容
+% \SetWatermarkText{\includegraphics{fig/ZJDX-WaterMark.eps}}         % 设置水印logo
+% \SetWatermarkLightness{0.9}             % 设置水印透明度 0-1
+% \SetWatermarkScale{1}                   % 设置水印大小 0-1    
+
+\usepackage{hyperref} %bookmarks
+\hypersetup{colorlinks, bookmarks, unicode} %unicode
+
+\title{\textbf{差分方法求解薛定谔定态方程}}
+\author{ 何翼成 \thanks{学号:520072910043; \newline
+    邮箱地址：heyicheng@sjtu. edu. cn} }
+\date{\today}
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%这是一篇中文小论文。这个部分用来写摘要。摘要的章标题默认是英文，还没找到改成中文的方法:(
+%\end{abstract}
+\section*{Project 1}
+\section{题目分析}
+%%%以下为插入图片模板
+%\quad \newline
+	\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=1\textwidth,height=0.3\textwidth]{pictures/project.png}
+		\caption{题目总览} \label{project}
+	\end{figure}
+
+由课上知识可知，为了求解微分方程，我们对该方程进行差分即可得到
+$-\frac{\psi_{i+1}-2\psi_{i}+\psi_{i-1}}{2\delta x^2}+V(x)\psi_{i}=E\psi_{i}$,
+其中代入$V(x)=\frac{x^2}{2}+\frac{x^4}{10}$即可。我们可以看到，这一系列的方程具有相似的结构，
+而Matlab擅长于矩阵的数值处理，我们便可以利用矩阵的思想进行便捷的计算。
+
+
+\section{代码展示}
+~\\
+\lstset{language=matlab}
+\begin{lstlisting}
+  clear;clc;
+  X=4;%长度
+  N=1000;%格点数
+  dx=2*X/N;%步长
+  x=linspace(-X,X,N);
+  V=1/2*x'.^2+0.1*x'.^4;%一维势场
+  A=spdiags(V,0,N,N);%提取V的对角线并且生成矩阵
+  H=zeros(N,3);%哈密顿算符
+  H(:,1)=-0.5/dx^2;
+  H(:,2)=1/dx^2;
+  H(:,3)=-0.5/dx^2;
+  B=spdiags(H,-1:1,N,N);
+  C=A+B;
+  E=1;%能级数
+  [Vector,Value]=eigs(C,E,0);
+  %画图
+  for i=1:E
+      psi=Vector(:,i);
+      if i>1
+          subplot(3,3,i)
+      end
+          plot(x,psi.^2/sum(psi.^2*dx))
+          ylim([0,1])
+          xlabel('x');ylabel('P')
+  end
+\end{lstlisting}
+
+由此可以观察得到的图像进行简要分析，从而得到所需要的初始条件和方程参数。
+\section{结果分析与结论}
+
+	\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=1\textwidth,height=0.75\textwidth]{pictures/psi.png}
+		\caption{求解得到的波函数图像} \label{p1}
+	\end{figure}
+观察工作区里的数据，我们可以看到计算得出的能量本征值为0.559752150548532。
+%以下为插入代码模板
+%~\\
+%\lstset{language=matlab}
+%\begin{lstlisting}
+%\end{lstlisting}
+
+
+%%%以下为插入图片模板
+%\quad \newline
+%	\begin{figure}[!htbp]
+%		\centering
+%		\includegraphics[width=0.5\textwidth,height=0.375\textwidth]{pictures/minscale.png}
+%		\caption{最小风向} \label{minsacle}
+%	\end{figure}
+
+%%%以下为插入图片模板
+%\quad \newline
+%	\begin{figure}[!htbp]
+%		\centering
+%		\includegraphics[width=0.5\textwidth,height=0.375\textwidth]{pictures/minscale.png}
+%		\caption{最小风向} \label{minsacle}
+%	\end{figure}
+
+%    \begin{algorithm}
+%		\caption{Title of the Algorithm}
+%     	\begin{algorithmic}[1]
+%			\REQUIRE some words.  % this command shows "Input"
+%			\ENSURE ~\\           % this command shows "Initialized"
+%			some text goes here ... \\
+%			\WHILE {\emph{not converged}}
+%			\STATE ... \\  % line number at left side
+%			\ENDWHILE
+%			\RETURN this is the lat part.  % this command shows "Output"
+%		\end{algorithmic}
+%	\end{algorithm}
+
+\end{document}

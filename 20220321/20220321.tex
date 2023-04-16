@@ -1,0 +1,265 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[left=2.50cm, right=2.50cm, top=2.50cm, bottom=2.50cm]{geometry}
+%页边距
+\CTEXsetup[format={\Large\bfseries}]{section} %设置章标题居左
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- text font --
+% compile using Xelatex
+%%%%%%%%%%%%%%%%%%%%%%%
+% -- 中文字体 --
+%\setmainfont{Microsoft YaHei}  % 微软雅黑
+%\setmainfont{YouYuan}  % 幼圆    
+%\setmainfont{NSimSun}  % 新宋体
+%\setmainfont{KaiTi}    % 楷体
+%\setmainfont{SimSun}   % 宋体
+%\setmainfont{SimHei}   % 黑体
+% -- 英文字体 --
+%\usepackage{times}
+%\usepackage{mathpazo}
+%\usepackage{fourier}
+%\usepackage{charter}
+
+%\usepackage{helvet}
+
+\usepackage{amsmath, amsfonts, amssymb} % math equations, symbols
+\usepackage[english]{babel}
+\usepackage{color}	% color content
+\usepackage{graphicx}	% import figures
+\usepackage{url}	% hyperlinks
+\usepackage{bm} 	% bold type for equations
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{zhnumber}
+\usepackage{longtable}
+\usepackage{subfigure}
+\usepackage{float}
+\renewcommand\thesection{\zhnum{section}}
+\renewcommand \thesubsection {\arabic{section}}
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}}
+% use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{ \textbf{Initialize:}}
+% use Initialize in the format of Algorithm  
+\renewcommand{\algorithmicreturn}{ \textbf{Output:}}
+% use Output in the format of Algorithm  
+%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,%设置行号位置none不显示行号
+  %numberstyle=\tiny\courier, %设置行号大小
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside=``,%逃逸字符(1左面的键)，用于显示中文例如在代码中`中文...`
+  tabsize=4,
+  extendedchars=false %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr} %设置页眉、页脚
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+%\rhead{\includegraphics[width=1.2cm]{fig/ZJU_BLUE.eps}}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+\fancyfoot[RE,RO]{~\thepage~}
+
+\fancyhead[RE,RO]{计算物理导论 \quad 2022春季学期 \quad 作业5  \quad 何翼成}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%  设置水印
+%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{draftwatermark}         % 所有页加水印
+%\usepackage[firstpage]{draftwatermark} % 只有第一页加水印
+% \SetWatermarkText{Water-Mark}           % 设置水印内容
+% \SetWatermarkText{\includegraphics{fig/ZJDX-WaterMark.eps}}         % 设置水印logo
+% \SetWatermarkLightness{0.9}             % 设置水印透明度 0-1
+% \SetWatermarkScale{1}                   % 设置水印大小 0-1    
+
+\usepackage{hyperref} %bookmarks
+\hypersetup{colorlinks, bookmarks, unicode} %unicode
+
+\title{\textbf{DL\&ML in Quantum Many-Body Computation}}
+\author{ 何翼成 \thanks{学号:520072910043; \newline
+    邮箱地址：heyicheng@sjtu. edu. cn} }
+\date{\today}
+
+\begin{document}
+\maketitle
+%\begin{abstract}
+%这是一篇中文小论文。这个部分用来写摘要。摘要的章标题默认是英文，还没找到改成中文的方法:(
+%\end{abstract}
+\section{引入}
+\subsubsection{背景}
+机器学习、深度学习、人工智能（神经网络）之类的概念，都是计算机领域
+当中的处理数据组的常用工具。而物理学，有一句话可以这样描述：
+“The whole history of science can be attributed as searching 
+for patten in Nature and summarizing them intophysical/chemistry/biological laws”.所以我们不难发现，ML、DL等计算机领域
+ 的方法，它们的目的正是和物理（或者说是自然科学）的目的相重合的。
+ 所以，我们不难得出结论，经过适当训练的物理学家，也同样能够利用这些数据处理方法，
+ 将其运用在物理领域，从而发现新的规律。\newline
+
+\subsubsection{发展}
+机器学习自从诞生后，便注定深度参与到物理研究去。这是由它的工具性质决定的。
+由于最初机器学习被应用于模式识别以进行电子游戏和桌游的参与，这种初步的能力
+被证明在部分情况下，它们的表现往往要比人类选手要强。而这种能力正在逐渐应用于
+量子力学当中去。比较粗糙的说法是，机器学习可以应用于设计新的实验、执行
+自动优化和改善反馈控制 \cite{carleo_solving_2017} 。\newline
+
+量子力学中常常需要面对记录大量复数来保存一个完整的波函数的问题，对此本人也算是
+深有同感。比如在模拟一个处于初态的粒子在一个无限深方势阱中的演化时，
+比较简单的想法就是将原本的初态通过原本束缚态的基础解函数进行广义傅里叶级数
+展开得到傅里叶级数，最后统一乘上对应的时间因子然后进行求模计算。
+然而，这个过程所需要的时间往往随着所保留的级数数量巨量地增加，而且
+我们不得不承认，如果使用这种古老而不变通的方法进行数值模拟计算，我们不得不在
+效率和效果之间取得微弱的平衡。\newline
+
+~\\
+\lstset{language=matlab}
+\begin{lstlisting}
+  clear;clc;
+  %这里代入k=1进行数据示例
+  a=1;h_bar=1;m=1;
+  syms x n t k
+  phi_n=@(x,n)sqrt(1/a)*sin(pi*n*x/(2*a));%新波函数的基函数
+  %phi_t0里面的k是待定常数
+  phi_t0=@(x,k)sqrt(2/a)*sin(k*pi*x/a);%波函数的初态
+  c_n=int(phi_t0(x,k)*phi_n(x,n),x,0,a);%归一化系数
+  E_n=@(n)pi^2*n^2*h_bar^2/(2*(2*a)^2*m);
+  phi_n_t=@(x,n,t)c_n(n)*phi_n(x,n)*exp(-1i*E_n(n)/h_bar*t);
+  phi_t_series=@(x,t) 0;
+  for ns=1:90
+      phi_t_series=@(x,t)phi_t_series(x,t)+phi_n_t(x,ns,t);
+  end
+  xx=0:0.01:2*a;
+  tt=0:0.1:2;
+  [X,T]=meshgrid(xx,tt);
+  s=size(X);
+  phi=zeros(s(1),s(2));
+  parfor i=1:s(1)
+        phi(i,:)=@(t)phi_t_series(xx(i),t);
+  end
+  parfor j=1:s(2)
+      phi_val(:,j)=phi(tt(j));
+  end
+  parpool close;
+  surf(X,T,abs(phi).^2)
+\end{lstlisting}
+ \newline
+
+通过这样的例子，就不难理解用这种方法机型计算是多么愚蠢了。为了
+能够更有效地进行学习和研究，我们提出了许多方法进行近似和优化，以避免
+仅仅计算少数的量子态的物理问题就需要占用大量的内存。比如Matrix Product States
+就是处理一维多体系统基态的优秀方法。\newline
+
+这表明，每个物理问题都有可能有最适合其的
+Compact Representation for the wave function。而使用人工，或者人的智慧
+来寻找这样一个解的存在显然过于繁杂，所以出于简化寻找过程的目的，
+Carleo与Troyer建议使用机器学习来自动发现它们。\newline
+
+他们通过假设函数可以通过神经网络来逼近得到，所以设定了权重和偏差后，
+使得神经网络学习系统基态的波函数的Compact Representation。出身于变分
+蒙特卡洛算法的AI能够借助输入的哈密顿量来使得系统局部能量最小化。\newline
+
+结果证明，神经网络的方法不仅占用内存比其它方法所占用的内存要少，而且有希望
+通过增加隐含偏差和权重的数量来进一步提高神经网络估计的准确性。当然，这是指至少在
+他们所测试的问题上面，神经网络的表现的确如此。\newline
+
+需要指出的是，在这样一个物理问题上C和T仍然存在局限性。首先是模拟的方案的广泛性
+尚未得到更完全的证明，我们需要考虑神经网络方法能否适用于更多的物理领域；其次是
+这个神经网络显然十分粗糙，单层神经网络就已经足以面对一个不小的物理课题，那么
+使用已被证明具有极强学习和表达能力的深度神经网络将是更为明智的选择。\newline
+
+\section{现状}
+该领域目前已经得到极大的发展，以至于用现在的视角来看待都未免太狭隘了。目前已经
+进行的有材料领域、相变、重整化群、量子机器学习等等。这些领域的大致情况
+借由\emph{Lecture Note on Deep Learning and Quantum Many-Body Computation(Jin-Guo Liu,Shuo-Hui Li, and Lei Wang)}
+这本小册子介绍。\newline
+
+个人认为，比较经典的例子就是Ising Model问题了。所以也在这里着重描述。
+我们曾经使用蒙特卡洛方法在matlab上进行了模拟，但是实际上使用张量网络方法也可以得出类似的
+结果。\newline
+
+
+
+\section{现存问题与展望}
+相当一部分的课题都是出于验证目的，即我们已经知道了其对应的物理解释或者说是物理意义，
+但是对于推动新的物理定律发现或许我们没有足够的信心;我们或许难以理解其做出的结果其物理含义是什么。\newline
+
+神经网络的四个要素即为数据、模型、目标函数和优化。因此我们也能基于
+它们向更远的未来寻找方向。\newline
+
+仅仅是制造新的材料已经不能满足我们了，我们是否能够借助神经网络来预测
+物质的新相？目前已知的研究可以通过\emph{Machine learning phases of Matter,Juan Carrasquilla and Roger G. Melko}这篇文章进行了解。
+既然如此，我们是否还能做到更多？ \newline
+
+我们现在是在使用算法来寻找函数、态等结果。
+那么借由算法来寻找新的、更强大的算法，是否存在可能？
+(这个发展类似于使用泛函分析寻找最优函数) \newline
+
+费米子的交换存在反对易性，因此只有在少数的模型(负U哈伯德模型等)可以避免负符号问题。
+量子蒙特卡洛算法对于存在负符号的问题比较棘手，我们是否能够在未来的某一天
+将其完全解决？\newline
+
+神经网络的优化、进化和重整化的效果是否有极限？如果存在，这个极限足够使得我们面对多数的
+物理问题吗？如果不够，我们当今出于什么阶段？\newline
+
+以上的几个问题，均是上述小册子的作者根据目前已有方法
+(反向传播算法，深度学习库，规范化建模生成，图像修复\dots)提出的在量子多体计算问题
+上的新课题，这些课题可能在现在已经有了不小的突破，也有可能处于认知的鸿沟。但是
+学习并攻克之，应当是神经网络方法的重要目标。\newline
+
+%%%以下为插入图片模板
+%\quad \newline
+%	\begin{figure}[!htbp]
+%		\centering
+%		\includegraphics[width=0.5\textwidth,height=0.375\textwidth]{pictures/minscale.png}
+%		\caption{最小风向} \label{minsacle}
+%	\end{figure}
+
+%%%以下为插入图片模板
+%\quad \newline
+%	\begin{figure}[!htbp]
+%		\centering
+%		\includegraphics[width=0.5\textwidth,height=0.375\textwidth]{pictures/minscale.png}
+%		\caption{最小风向} \label{minsacle}
+%	\end{figure}
+
+%    \begin{algorithm}
+%		\caption{Title of the Algorithm}
+%     	\begin{algorithmic}[1]
+%			\REQUIRE some words.  % this command shows "Input"
+%			\ENSURE ~\\           % this command shows "Initialized"
+%			some text goes here ... \\
+%			\WHILE {\emph{not converged}}
+%			\STATE ... \\  % line number at left side
+%			\ENDWHILE
+%			\RETURN this is the lat part.  % this command shows "Output"
+%		\end{algorithmic}
+%	\end{algorithm}
+
+\bibliographystyle{plain}
+\bibliography{ref}
+\end{document}
